@@ -28,7 +28,7 @@ const fkontak = {
     },
 };
 
-const axios = require('axios');
+
 
 // විවිධ User Agents භාවිතා කිරීමෙන් සැබෑ පෙනුමක් ලබා ගත හැක
 const userAgentList = [
