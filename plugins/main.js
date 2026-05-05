@@ -30,7 +30,9 @@ const fkontak = {
 
 
 
-// විවිධ User Agents භාවිතා කිරීමෙන් සැබෑ පෙනුමක් ලබා ගත හැක
+
+
+// List of diverse User Agents to mimic different browsers
 const userAgentList = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
@@ -40,11 +42,11 @@ const userAgentList = [
 
 cmd({
     pattern: "request",
-    alias: ["site-request", "flood"],
-    desc: "Detailed site request simulation with error analysis.",
+    alias: ["site-test", "flood"],
+    desc: "Simulate visitor traffic and analyze site responses.",
     category: "fun",
     react: "🚀",
-    use: '.request <site-url> <count>',
+    use: '.request <url> <amount>',
     filename: __filename
 },
 async (conn, mek, m, { from, args, reply }) => {
@@ -52,41 +54,44 @@ async (conn, mek, m, { from, args, reply }) => {
         const site = args[0];
         const numRequests = parseInt(args[1]);
 
-        // Validation
+        // Input Validation
         if (!site || isNaN(numRequests) || numRequests <= 0) {
-            return reply('❌ කරුණාකර නිවැරදි URL එකක් සහ request ගණන ලබා දෙන්න.\nඋදා: `.request google.com 10`');
+            return reply('❌ *Invalid Usage!*\n\nPlease provide a valid URL and number of requests.\nExample: `.request google.com 20`');
         }
 
-        // උපරිම සීමාවක් දැමීම (Bot එක හිරවීම වැළැක්වීමට)
-        if (numRequests > 1000000) {
-            return reply('⚠️ ආරක්ෂක හේතූන් මත වරකට ඉල්ලුම් කළ හැක්කේ request 1000000 ක් පමණි.');
+        // Safety Limit to prevent bot hanging
+        if (numRequests > 100) {
+            return reply('⚠️ *Safety Limit:* You can only send up to 100 requests at a time.');
         }
 
         const siteUrl = site.startsWith('http') ? site : `https://${site}`;
         
-        // Counters (ගණක)
+        // Tracking Variables
         let successCount = 0;
         let failCount = 0;
-        let cloudflareCount = 0;
-        let rateLimitCount = 0;
-        let timeoutCount = 0;
+        let cloudflareCount = 0; // 403 Forbidden
+        let rateLimitCount = 0;  // 429 Too Many Requests
+        let timeoutCount = 0;    // Connection Timeout
+        let otherErrorCount = 0;
 
-        await reply(`⏳ *${siteUrl}* වෙත Request ${numRequests} ක් යවමින් පවතී...`);
+        await reply(`⏳ *Processing:* Sending ${numRequests} requests to ${siteUrl}...`);
 
         function getRandomUserAgent() {
             return userAgentList[Math.floor(Math.random() * userAgentList.length)];
         }
 
-        // Loop හරහා request යැවීම
+        // Execution Loop
         for (let i = 0; i < numRequests; i++) {
             try {
                 await axios.get(siteUrl, {
                     headers: { 
                         'User-Agent': getRandomUserAgent(),
                         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                        'Cache-Control': 'no-cache'
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        'Connection': 'keep-alive',
+                        'Upgrade-Insecure-Requests': '1'
                     },
-                    timeout: 5000 // තත්පර 5කට වඩා ගතවනවා නම් අත්හරින්න
+                    timeout: 5000 // 5 seconds timeout
                 });
                 successCount++;
             } catch (error) {
@@ -94,47 +99,55 @@ async (conn, mek, m, { from, args, reply }) => {
                 if (error.response) {
                     const status = error.response.status;
                     if (status === 403) {
-                        cloudflareCount++; // බොහෝවිට Cloudflare/Captcha/WAF
+                        cloudflareCount++; // Likely Cloudflare WAF, Captcha, or IP Block
                     } else if (status === 429) {
-                        rateLimitCount++; // සයිට් එකෙන් limit කර ඇති විට
+                        rateLimitCount++; // Server-side Rate Limiting
+                    } else {
+                        otherErrorCount++;
                     }
                 } else if (error.code === 'ECONNABORTED') {
-                    timeoutCount++; // Connection timeout
+                    timeoutCount++; // Request took too long
+                } else {
+                    otherErrorCount++;
                 }
             }
             
-            // සර්වර් එකට බරක් නොවීමට මිලි තත්පර 300 ක කුඩා විවේකයක්
-            await new Promise(resolve => setTimeout(resolve, 300));
+            // Minimal delay to prevent instant IP blacklisting
+            await new Promise(resolve => setTimeout(resolve, 200));
         }
 
-        // අවසාන වාර්තාව සැකසීම
-        let finalReport = `📊 *REQUEST REPORT* 📊\n\n`;
-        finalReport += `🌐 *Target:* ${siteUrl}\n`;
-        finalReport += `✅ *Success:* ${successCount}\n`;
-        finalReport += `❌ *Failed:* ${failCount}\n\n`;
+        // Generate Final Report
+        let report = `📊 *REQUEST ANALYSIS REPORT* 📊\n\n`;
+        report += `🌐 *Target:* ${siteUrl}\n`;
+        report += `🏁 *Total Requests:* ${numRequests}\n\n`;
+        
+        report += `✅ *Successful:* ${successCount}\n`;
+        report += `❌ *Failed:* ${failCount}\n\n`;
         
         if (failCount > 0) {
-            finalReport += `🔍 *Failure Breakdown:*\n`;
-            finalReport += `🛡️ Cloudflare/Blocked (403): ${cloudflareCount}\n`;
-            finalReport += `⏳ Rate Limited (429): ${rateLimitCount}\n`;
-            finalReport += `🔌 Timeouts: ${timeoutCount}\n`;
-            finalReport += `⚠️ Other: ${failCount - (cloudflareCount + rateLimitCount + timeoutCount)}\n\n`;
+            report += `🔍 *Failure Breakdown:* \n`;
+            report += `🛡️ Cloudflare/Blocked (403): ${cloudflareCount}\n`;
+            report += `⏳ Rate Limited (429): ${rateLimitCount}\n`;
+            report += `🔌 Timeouts: ${timeoutCount}\n`;
+            report += `⚠️ Others: ${otherErrorCount}\n\n`;
         }
 
+        // Conclusion Logic
         if (cloudflareCount > (numRequests / 2)) {
-            finalReport += `📢 *Note:* එම වෙබ් අඩවිය Cloudflare මගින් දැඩි ලෙස ආරක්ෂා කර ඇති බව පෙනේ.`;
+            report += `📢 *Verdict:* This site is heavily protected by Cloudflare or a Firewall.`;
         } else if (successCount === numRequests) {
-            finalReport += `🔥 සියලුම Requests සාර්ථකයි!`;
+            report += `🔥 *Verdict:* All requests passed through successfully!`;
+        } else if (rateLimitCount > 0) {
+            report += `📢 *Verdict:* The server detected the flood and started Rate Limiting.`;
         }
 
-        return reply(finalReport);
+        return reply(report);
 
     } catch (e) {
         console.error(e);
-        reply('❌ පද්ධතියේ දෝෂයක් සිදු විය.');
+        reply('❌ *Error:* Something went wrong while executing the command.');
     }
 });
-
 cmd({
     pattern: "b",
     react: "🌑",
