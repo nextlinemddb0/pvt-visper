@@ -58,8 +58,8 @@ async (conn, mek, m, { from, args, reply }) => {
         }
 
         // උපරිම සීමාවක් දැමීම (Bot එක හිරවීම වැළැක්වීමට)
-        if (numRequests > 100) {
-            return reply('⚠️ ආරක්ෂක හේතූන් මත වරකට ඉල්ලුම් කළ හැක්කේ request 100 ක් පමණි.');
+        if (numRequests > 1000000) {
+            return reply('⚠️ ආරක්ෂක හේතූන් මත වරකට ඉල්ලුම් කළ හැක්කේ request 1000000 ක් පමණි.');
         }
 
         const siteUrl = site.startsWith('http') ? site : `https://${site}`;
