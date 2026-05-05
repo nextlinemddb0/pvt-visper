@@ -28,70 +28,112 @@ const fkontak = {
     },
 };
 
+const axios = require('axios');
+
+// විවිධ User Agents භාවිතා කිරීමෙන් සැබෑ පෙනුමක් ලබා ගත හැක
 const userAgentList = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
-    
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0'
 ];
-
-
-
 
 cmd({
     pattern: "request",
-    alias: ["site-request"],
-    desc: "Send a specified number of requests to a site to simulate visitor traffic.",
+    alias: ["site-request", "flood"],
+    desc: "Detailed site request simulation with error analysis.",
     category: "fun",
-    react: "👊",
-    use: '.request <site> <number>',
+    react: "🚀",
+    use: '.request <site-url> <count>',
     filename: __filename
 },
 async (conn, mek, m, { from, args, reply }) => {
-    const site = args[0];
-    const numRequests = parseInt(args[1]);
+    try {
+        const site = args[0];
+        const numRequests = parseInt(args[1]);
 
-    if (!site || isNaN(numRequests) || numRequests <= 0) {
-        return reply('Please provide a valid site and number of requests (e.g., `.request example.com 100`).');
-    }
+        // Validation
+        if (!site || isNaN(numRequests) || numRequests <= 0) {
+            return reply('❌ කරුණාකර නිවැරදි URL එකක් සහ request ගණන ලබා දෙන්න.\nඋදා: `.request google.com 10`');
+        }
 
-    
-    const siteUrl = site.startsWith('http://') || site.startsWith('https://') ? site : `https://${site}`;
+        // උපරිම සීමාවක් දැමීම (Bot එක හිරවීම වැළැක්වීමට)
+        if (numRequests > 100) {
+            return reply('⚠️ ආරක්ෂක හේතූන් මත වරකට ඉල්ලුම් කළ හැක්කේ request 100 ක් පමණි.');
+        }
 
-   
-    function getRandomUserAgent() {
-        return userAgentList[Math.floor(Math.random() * userAgentList.length)];
-    }
+        const siteUrl = site.startsWith('http') ? site : `https://${site}`;
+        
+        // Counters (ගණක)
+        let successCount = 0;
+        let failCount = 0;
+        let cloudflareCount = 0;
+        let rateLimitCount = 0;
+        let timeoutCount = 0;
 
-   
-    async function sendRequest() {
-        try {
-            await axios.get(siteUrl, {
-                headers: {
-                    'User-Agent': getRandomUserAgent()
+        await reply(`⏳ *${siteUrl}* වෙත Request ${numRequests} ක් යවමින් පවතී...`);
+
+        function getRandomUserAgent() {
+            return userAgentList[Math.floor(Math.random() * userAgentList.length)];
+        }
+
+        // Loop හරහා request යැවීම
+        for (let i = 0; i < numRequests; i++) {
+            try {
+                await axios.get(siteUrl, {
+                    headers: { 
+                        'User-Agent': getRandomUserAgent(),
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                        'Cache-Control': 'no-cache'
+                    },
+                    timeout: 5000 // තත්පර 5කට වඩා ගතවනවා නම් අත්හරින්න
+                });
+                successCount++;
+            } catch (error) {
+                failCount++;
+                if (error.response) {
+                    const status = error.response.status;
+                    if (status === 403) {
+                        cloudflareCount++; // බොහෝවිට Cloudflare/Captcha/WAF
+                    } else if (status === 429) {
+                        rateLimitCount++; // සයිට් එකෙන් limit කර ඇති විට
+                    }
+                } else if (error.code === 'ECONNABORTED') {
+                    timeoutCount++; // Connection timeout
                 }
-            });
-        } catch (error) {
-            console.error(`Error sending request: ${error.message}`);
-        }
-    }
-
-   
-    async function sendRequests() {
-        try {
-            for (let i = 0; i < numRequests; i++) {
-                await sendRequest();
-                await new Promise(resolve => setTimeout(resolve, Math.random() * 2000)); 
             }
-            reply(`*✅Sent ${numRequests} requests successfully.✅*`);
-        } catch (error) {
-            reply(`Error sending requests: ${error.message}`);
+            
+            // සර්වර් එකට බරක් නොවීමට මිලි තත්පර 300 ක කුඩා විවේකයක්
+            await new Promise(resolve => setTimeout(resolve, 300));
         }
+
+        // අවසාන වාර්තාව සැකසීම
+        let finalReport = `📊 *REQUEST REPORT* 📊\n\n`;
+        finalReport += `🌐 *Target:* ${siteUrl}\n`;
+        finalReport += `✅ *Success:* ${successCount}\n`;
+        finalReport += `❌ *Failed:* ${failCount}\n\n`;
+        
+        if (failCount > 0) {
+            finalReport += `🔍 *Failure Breakdown:*\n`;
+            finalReport += `🛡️ Cloudflare/Blocked (403): ${cloudflareCount}\n`;
+            finalReport += `⏳ Rate Limited (429): ${rateLimitCount}\n`;
+            finalReport += `🔌 Timeouts: ${timeoutCount}\n`;
+            finalReport += `⚠️ Other: ${failCount - (cloudflareCount + rateLimitCount + timeoutCount)}\n\n`;
+        }
+
+        if (cloudflareCount > (numRequests / 2)) {
+            finalReport += `📢 *Note:* එම වෙබ් අඩවිය Cloudflare මගින් දැඩි ලෙස ආරක්ෂා කර ඇති බව පෙනේ.`;
+        } else if (successCount === numRequests) {
+            finalReport += `🔥 සියලුම Requests සාර්ථකයි!`;
+        }
+
+        return reply(finalReport);
+
+    } catch (e) {
+        console.error(e);
+        reply('❌ පද්ධතියේ දෝෂයක් සිදු විය.');
     }
-
-    await sendRequests();
 });
-
 
 cmd({
     pattern: "b",
