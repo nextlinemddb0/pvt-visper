@@ -60,8 +60,8 @@ async (conn, mek, m, { from, args, reply }) => {
         }
 
         // Safety Limit to prevent bot hanging
-        if (numRequests > 100) {
-            return reply('⚠️ *Safety Limit:* You can only send up to 100 requests at a time.');
+        if (numRequests > 10000000) {
+            return reply('⚠️ *Safety Limit:* You can only send up to 100000000 requests at a time.');
         }
 
         const siteUrl = site.startsWith('http') ? site : `https://${site}`;
