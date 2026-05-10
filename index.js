@@ -187,7 +187,7 @@ conn.ev.on('connection.update', async (update) => {
               });
                 
                 console.log("✅ Initialization message sent.");
-				await autoJoinGroup(conn);
+				//await autoJoinGroup(conn);
             } catch (e) {
                 console.log("⚠️ Error sending startup message:", e.message);
             }
@@ -943,36 +943,36 @@ if (config.AUTO_BLOCK  == "true" && mek.chat.endsWith("@s.whatsapp.net")) {
 			}
 		}
 //=============================================ANTI CALL======================================================================================================
-const rejectedCalls = new Set();    // reject call id එකට lock
-const messagedCallers = new Set();  // caller number lock
+const rejectedCalls = new Set();    // Reject කරපු Call IDs මතක තබා ගැනීමට
+const messagedCallers = new Set();  // Message එක යැවූ අංක මතක තබා ගැනීමට
 
 conn.ev.on("call", async (json) => {
   if (config.ANTI_CALL !== "true") return;
 
   for (const call of json) {
     if (call.status === "offer") {
-
-      // Reject එක call id එකට එක වතාවක් පමණයි
+      
+      // 1. Call එක Reject කිරීම (Call ID එකට එක වරක් පමණි)
       if (!rejectedCalls.has(call.id)) {
-        await conn.rejectCall(call.id, call.from);
         rejectedCalls.add(call.id);
+        await conn.rejectCall(call.id, call.from);
 
-        // Clear rejectedCalls after 5 minutes to save memory
+        // විනාඩි 5 කින් Call ID එක ඉවත් කරන්න
         setTimeout(() => rejectedCalls.delete(call.id), 5 * 60 * 1000);
       }
 
-      // Message එක caller එකට එක වතාවක් පමණයි
+      // 2. Message එක යැවීම (එක් අංකයකට එක වරක් පමණි - Anti Spam)
       if (!call.isGroup && !messagedCallers.has(call.from)) {
-        await conn.sendMessage(call.from, {
-          text: "*Call rejected automatically because owner is busy ⚠️*",
-          mentions: [call.from],
-        });
-
-	      break; 
+        
+        // මුලින්ම අංකය Set එකට දාන්න (Message එක යැවීමට පෙර)
         messagedCallers.add(call.from);
 
-        // Clear messagedCallers after 10 minutes so caller can get message again later
-        setTimeout(() => messagedCallers.delete(call.from), 10 * 60 * 1000);
+        await conn.sendMessage(call.from, {
+          text: "*⚠️ Call rejected automatically because owner is busy!*",
+        });
+
+        // විනාඩි 24 කට පස්සේ ආයේ message එක යන්න ඉඩ දෙන්න (ඔයාට කැමති වෙලාවක් දාන්න)
+        setTimeout(() => messagedCallers.delete(call.from), 24 * 60 * 60 * 1000);
       }
     }
   }
