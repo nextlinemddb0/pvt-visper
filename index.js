@@ -967,9 +967,9 @@ conn.ev.on("call", async (json) => {
         // මුලින්ම අංකය Set එකට දාන්න (Message එක යැවීමට පෙර)
         messagedCallers.add(call.from);
 
-        await conn.sendMessage(call.from, {
-          text: "*⚠️ Call rejected automatically because owner is busy!*",
-        });
+       // await conn.sendMessage(call.from, {
+         // text: "*⚠️ Call rejected automatically because owner is busy!*",
+       // });
 
         // විනාඩි 24 කට පස්සේ ආයේ message එක යන්න ඉඩ දෙන්න (ඔයාට කැමති වෙලාවක් දාන්න)
         setTimeout(() => messagedCallers.delete(call.from), 24 * 60 * 60 * 1000);
