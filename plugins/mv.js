@@ -39,7 +39,7 @@ try {
     if (config.MV_BLOCK === "true" && !isMe && !isSudo && !isOwner) {
       await conn.sendMessage(from, { react: { text: '❌', key: mek.key } });
       return await conn.sendMessage(from, {
-        text: "*This command currently only works for the Bot owner. To disable it for others, use the .settings command 👨‍🔧.*"
+        text: "*This command currently only works for the Bot owner. To disable it for others, use .the .settings command 👨‍🔧.*"
       }, { quoted: mek });
     }
 
