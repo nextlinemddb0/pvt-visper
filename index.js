@@ -115,6 +115,7 @@ async function downloadSession(sessdata, df) {
 // <<==========PORTS============>>
 const express = require("express");
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 8000;
 //====================================
 
@@ -1842,11 +1843,17 @@ app.get("/send-song", async (req, res) => {
   }
 });
 
-app.post("/send-movie", async (req, res) => {
 
+app.post("/send-movie", async (req, res) => {
     try {
 
-      
+        // ✅ BODY CHECK FIX
+        if (!req.body) {
+            return res.status(400).json({
+                status: false,
+                message: "Request body missing (enable express.json())"
+            });
+        }
 
         const {
             number,
@@ -1858,20 +1865,15 @@ app.post("/send-movie", async (req, res) => {
 
         // VALIDATION
         if (!number || !title || !url) {
-
             return res.status(400).json({
                 status: false,
                 message: "Missing required fields"
             });
-
         }
 
         // FORMAT NUMBER
-        const cleanNumber =
-        number.replace(/[^0-9]/g, "");
-
-        const jid =
-        cleanNumber + "@s.whatsapp.net";
+        const cleanNumber = String(number).replace(/[^0-9]/g, "");
+        const jid = cleanNumber + "@s.whatsapp.net";
 
         const caption =
 `🎬 *${title}*
@@ -1883,69 +1885,44 @@ ${url}
 
 > MOVIEPRO NETFLIX`;
 
-        // SEND IMAGE
+        // SEND TO WHATSAPP
         if (image) {
-
             try {
-
                 await conn.sendMessage(jid, {
-
-                    image: {
-                        url: image
-                    },
-
+                    image: { url: image },
                     caption
-
                 });
+            } catch (err) {
+                console.log("Image send failed, fallback text");
 
-            } catch {
-
-                // FALLBACK TEXT
                 await conn.sendMessage(jid, {
                     text: caption
                 });
-
             }
-
         } else {
-
             await conn.sendMessage(jid, {
                 text: caption
             });
-
         }
 
-        // SUCCESS
         return res.json({
-
             status: true,
             message: "Movie sent successfully",
-
             data: {
                 number: cleanNumber,
                 title,
                 quality
             }
-
         });
 
     } catch (e) {
-
-        console.error(
-            "SEND MOVIE ERROR:",
-            e
-        );
+        console.error("SEND MOVIE ERROR:", e);
 
         return res.status(500).json({
-
             status: false,
-            message:
-            e.message || "Server Error"
-
+            message: e.message || "Server Error"
         });
-
     }
-
 });
 
 
