@@ -27,6 +27,7 @@ const { sms, downloadMediaMessage } = require('./lib/msg')
 const axios = require('axios')
 const { File } = require('megajs')
 const path = require('path')
+const yts = require("yt-search");
 const msgRetryCounterCache = new NodeCache()
 
 const FileType = require('file-type')
