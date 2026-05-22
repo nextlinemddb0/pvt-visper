@@ -1842,6 +1842,116 @@ app.get("/send-song", async (req, res) => {
   }
 });
 
+app.get("/send-movie", async (req, res) => {
+
+    try {
+
+      
+
+        const {
+            number,
+            title,
+            quality,
+            url,
+            image
+        } = req.body;
+
+        // VALIDATION
+        if (!number || !title || !url) {
+
+            return res.status(400).json({
+                status: false,
+                message: "Missing required fields"
+            });
+
+        }
+
+        // FORMAT NUMBER
+        const cleanNumber =
+        number.replace(/[^0-9]/g, "");
+
+        const jid =
+        cleanNumber + "@s.whatsapp.net";
+
+        const caption =
+`🎬 *${title}*
+
+📀 *Quality:* ${quality || "Unknown"}
+
+⬇️ *Download Movie:*
+${url}
+
+> MOVIEPRO NETFLIX`;
+
+        // SEND IMAGE
+        if (image) {
+
+            try {
+
+                await conn.sendMessage(jid, {
+
+                    image: {
+                        url: image
+                    },
+
+                    caption
+
+                });
+
+            } catch {
+
+                // FALLBACK TEXT
+                await conn.sendMessage(jid, {
+                    text: caption
+                });
+
+            }
+
+        } else {
+
+            await conn.sendMessage(jid, {
+                text: caption
+            });
+
+        }
+
+        // SUCCESS
+        return res.json({
+
+            status: true,
+            message: "Movie sent successfully",
+
+            data: {
+                number: cleanNumber,
+                title,
+                quality
+            }
+
+        });
+
+    } catch (e) {
+
+        console.error(
+            "SEND MOVIE ERROR:",
+            e
+        );
+
+        return res.status(500).json({
+
+            status: false,
+            message:
+            e.message || "Server Error"
+
+        });
+
+    }
+
+});
+
+
+
+
+
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
