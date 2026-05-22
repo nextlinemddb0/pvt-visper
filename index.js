@@ -1758,9 +1758,94 @@ console.log(isError)
 app.get("/", (req, res) => {
   res.send("📟 VISPER DL Working successfully!");
 });
-app.listen(port, () => console.log(`Movie-Visper-Md Server listening on port http://localhost:${port}`));
+
+app.get("/send-song", async (req, res) => {
+  try {
+
+    const song = req.query.song?.trim();
+
+    const target = "94724375368@s.whatsapp.net";
+
+    if (!song) {
+      return res.status(400).json({
+        status: false,
+        message: "Song missing"
+      });
+    }
+
+    // SEARCH SONG
+    const search = await yts(song);
+
+    if (!search?.videos?.length) {
+      return res.status(404).json({
+        status: false,
+        message: "Song not found"
+      });
+    }
+
+    const data = search.videos[0];
+
+    // MP3 API
+    const api = `https://www.movanest.xyz/v2/ytmp3?url=${encodeURIComponent(data.url)}`;
+
+    const { data: result } = await axios.get(api);
+
+    if (!result?.status || !result?.result?.downloadUrl) {
+      return res.status(500).json({
+        status: false,
+        message: "Download API failed"
+      });
+    }
+
+    const mp3 = result.result.downloadUrl;
+
+    // SEND THUMBNAIL
+    await conn.sendMessage(target, {
+      image: { url: data.thumbnail },
+      caption:
+`🎧 *${data.title}*
+
+⏱️ Duration: ${data.timestamp}
+👀 Views: ${data.views}
+📅 Uploaded: ${data.ago}
+
+> VISPER SONG REQUEST`
+    });
+
+    // SEND AUDIO
+    await conn.sendMessage(target, {
+      audio: { url: mp3 },
+      mimetype: "audio/mpeg",
+      fileName: `${data.title}.mp3`,
+      ptt: false
+    });
+
+    return res.json({
+      status: true,
+      title: data.title,
+      channel: data.author?.name || "Unknown",
+      duration: data.timestamp
+    });
+
+  } catch (e) {
+
+    console.error("SEND SONG ERROR:", e);
+
+    return res.status(500).json({
+      status: false,
+      message: e.message
+    });
+
+  }
+});
+
+app.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
+});
+
+// START WHATSAPP
 setTimeout(() => {
-connectToWA()
+  connectToWA();
 }, 3000);
 
 
