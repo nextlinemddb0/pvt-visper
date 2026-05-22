@@ -1842,7 +1842,7 @@ app.get("/send-song", async (req, res) => {
   }
 });
 
-app.get("/send-movie", async (req, res) => {
+app.post("/send-movie", async (req, res) => {
 
     try {
 
