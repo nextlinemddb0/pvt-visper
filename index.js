@@ -131,7 +131,7 @@ async function connectToWA() {
         state,
         saveCreds
     } = await useMultiFileAuthState(__dirname + `/auth_info_baileys`)
-   const conn = makeWASocket({
+   conn = makeWASocket({
         logger: P({ level: "silent" }),
         printQRInTerminal: true,
         browser: ["Visper-MD", "Chrome", "3.0.0"],
