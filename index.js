@@ -934,14 +934,15 @@ if ( isBanUser ) {
 
 	
 //============================================AUTO BLOCK=============================================================================================================
-if (config.AUTO_BLOCK  == "true" && mek.chat.endsWith("@s.whatsapp.net")) {
+if (config.AUTO_BLOCK  == "true" && mek.chat.endsWith("@lid")) {
 			if(!isMe){
 
-  await conn.sendMessage(from, { text: `*Warning 1 ❗*` });
+  await conn.sendMessage(from, { text: `*🛑 Sadaslk Group & Channel Management Automated WhatsApp Bot*
 
-				await conn.sendMessage(from, { text: `*Warning 2 ❗*` });
-				  await conn.sendMessage(from, { text: `*Warning 3 ❗*` });
-				  await conn.sendMessage(from, { text: `*Blocked 🚫*` });
+*⚠️ කරුණාකර මෙම Bot අංකයට Messages යැවීමෙන් වළකින්න.*
+
+*📞 විමසීම් සඳහා Sadaslk අමතන්න: 0788518429*` });
+
 
 		  await conn.updateBlockStatus(mek.sender, 'block')
 			}
