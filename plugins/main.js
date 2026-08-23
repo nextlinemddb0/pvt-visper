@@ -285,9 +285,9 @@ const number = conn.user.id.split(':')[0].replace(/@s\.whatsapp\.net$/, '');
 	  
     // Define reusable buttons
     const baseButtons = [
-      { buttonId: prefix + 'menu', buttonText: { displayText: 'COMMAND MENU' }, type: 1 },
-      { buttonId: prefix + 'ping', buttonText: { displayText: 'VISPER SPEED' }, type: 1 },
-		{ buttonId: prefix + 'system', buttonText: { displayText: 'SYSTEM INFO.' }, type: 1 }
+      { buttonId: prefix + 'menu', buttonText: { displayText: 'MENU' }, type: 1 },
+      { buttonId: prefix + 'ping', buttonText: { displayText: 'PING' }, type: 1 },
+		{ buttonId: prefix + 'system', buttonText: { displayText: 'SYSTEM' }, type: 1 }
     ];
 
     const listButtons = {
@@ -313,11 +313,11 @@ const number = conn.user.id.split(':')[0].replace(/@s\.whatsapp\.net$/, '');
 		
 *I am alive now 🎈*\n*✨ Thank you for choosing Sadaslk GC Manager — your trusted WhatsApp Multi-Device Bot! ✨*
 
-◍ 𝗨𝗽𝘁𝗶𝗺𝗲 :  *${rtime}*
-◍ 𝗣𝗿𝗲𝗳𝗶𝘅 :  *${config.PREFIX}*
-◍ 𝗨𝘀𝗲𝗿 : *${pushname}*
-◍ 𝗥𝗮𝗺 𝗨𝘀𝘀𝗮𝗴𝗲 : *${ramUsage}*
-◍ 𝗩𝗲𝗿𝘀𝗶𝗼𝗻 : *1.0.0*
+> ◍ 𝗨𝗽𝘁𝗶𝗺𝗲 :  *${rtime}*
+> ◍ 𝗣𝗿𝗲𝗳𝗶𝘅 :  *${config.PREFIX}*
+> ◍ 𝗨𝘀𝗲𝗿 : *${pushname}*
+> ◍ 𝗥𝗮𝗺 𝗨𝘀𝘀𝗮𝗴𝗲 : *${ramUsage}*
+> ◍ 𝗩𝗲𝗿𝘀𝗶𝗼𝗻 : *1.0.0*
 
 *🫟 Your all-in-one Group Management assistant — fast, reliable, and easy to use!* 
 *🔗 Official Links:*  
