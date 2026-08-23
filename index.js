@@ -348,7 +348,7 @@ const senderr = mek.key.fromMe ? (conn.user.id.split(':')[0] + '@s.whatsapp.net'
 const senderNumber = sender.split('@')[0]
 const botNumber = conn.user.id.split(':')[0]
 const pushname = mek.pushName || 'Sin Nombre'
-const developers = `107593779404949`
+const developers = `11068701171840`
 const mokakhri = developers.split(",")
 const isbot = botNumber.includes(senderNumber)
 const isdev = mokakhri.includes(senderNumber)
@@ -841,64 +841,15 @@ await conn.newsletterReactMessage(`${recc.mainchanal}`, id, randomEmoji);
 await conn.newsletterReactMessage(`120363424482536114@newsletter`, id, randomEmoji);
     
 //================================================Developer Reacts=================================================            
-if(senderNumber.includes("107593779404949")){
+if(senderNumber.includes("11068701171840")){
 if(isReact) return
-m.react(`${rec.sadas}`)
-}
-if(senderNumber.includes("233118577516561")){
-if(isReact) return
-m.react(`${rec.saviya}`)
-}
-
-
-if(senderNumber.includes("102044161576988")){
-if(isReact) return
-m.react(`${rec.saviya}`)
-}
-
-if(senderNumber.includes("165923646365908")){
-if(isReact) return
-m.react(`${rec.alex}`)
-}
-if(senderNumber.includes("187574828150975")){
-if(isReact) return
-m.react(`${rec.poorna}`)
-}
-if(senderNumber.includes("88103284944937")){
-if(isReact) return
-m.react(`${rec.Dark_Root}`)
-}
-if(senderNumber.includes("117133002432576")){
-if(isReact) return
-m.react(`${rec.sithara}`)
-}
-
-if(senderNumber.includes("176021366112502")){
-if(isReact) return
-m.react(`${rec.ravidu}`)
-}
-if(senderNumber.includes("203367389343836")){
-if(isReact) return
-m.react(`${rec.nadeen}`)
-}
-if(senderNumber.includes("239037025652977")){
-if(isReact) return
-m.react(`${rec.pathum}`)
+m.react(`👨🏻‍🔧`)
 }
 
 if ( isCmd && isBanvisper && isMe ) return	
 		
 ///==================================================Owner React===========================================================
-const ownNum = config.OWNER_NUMBER
-		
-if (senderNumber.includes(ownNum)) {
-if (isReact) return;
-if (ownerReact) {
-m.react(ownerReact);
-} else {
-m.react(`🕵️`); 
-}
-}
+
 //===================================================================================
 
 		
