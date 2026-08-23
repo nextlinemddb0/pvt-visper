@@ -309,8 +309,9 @@ const number = conn.user.id.split(':')[0].replace(/@s\.whatsapp\.net$/, '');
 
       const defaultMessage = {
         image: { url: config.LOGO },
-        caption: `*Hello ${pushname} 👋❕*  
-I am alive now 🎈\n✨ Thank you for choosing Sadaslk GC Manager — your trusted WhatsApp Multi-Device Bot! ✨
+        caption: `*Hello ${pushname} 👋❕*
+		
+*I am alive now 🎈*\n*✨ Thank you for choosing Sadaslk GC Manager — your trusted WhatsApp Multi-Device Bot! ✨*
 *┌────────────────────┐*
 *├ ⏳ 𝐔𝐩𝐭𝐢𝐦𝐞* : ${rtime}
 *├ 🚨 𝐇𝐨𝐬𝐭* : ${hostname}
