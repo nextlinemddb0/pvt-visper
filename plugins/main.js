@@ -312,20 +312,19 @@ const number = conn.user.id.split(':')[0].replace(/@s\.whatsapp\.net$/, '');
         caption: `*Hello ${pushname} 👋❕*
 		
 *I am alive now 🎈*\n*✨ Thank you for choosing Sadaslk GC Manager — your trusted WhatsApp Multi-Device Bot! ✨*
-*┌────────────────────┐*
-*├ ⏳ 𝐔𝐩𝐭𝐢𝐦𝐞* : ${rtime}
-*├ 🚨 𝐇𝐨𝐬𝐭* : ${hostname}
-*├ 🍭 𝐏𝐫𝐞𝐟𝐢𝐱* : ${config.PREFIX}
-*├ 👤 𝐔𝐬𝐞𝐫* : ${pushname}
-*├ 🗃️ 𝐑𝐚𝐦 𝐮𝐬𝐬𝐚𝐠𝐞* : ${ramUsage}
-*├ 🧬 𝐕𝐞𝐫𝐬𝐢𝐨𝐧* : 1.0.0
-*└────────────────────┘*
+
+◍ 𝗨𝗽𝘁𝗶𝗺𝗲 :  *${rtime}*
+◍ 𝗣𝗿𝗲𝗳𝗶𝘅 :  *${config.PREFIX}*
+◍ 𝗨𝘀𝗲𝗿 : *${pushname}*
+◍ 𝗥𝗮𝗺 𝗨𝘀𝘀𝗮𝗴𝗲 : *${ramUsage}*
+◍ 𝗩𝗲𝗿𝘀𝗶𝗼𝗻 : *1.0.0*
+
 *🫟 Your all-in-one Group Management assistant — fast, reliable, and easy to use!* 
 *🔗 Official Links:*  
 • *📢 WhatsApp Channel:* https://whatsapp.com/channel/0029VbCFHen3mFY6yL9D753N   
 
 *💛 Thank you for trusting Sadaslk GC Manager!*`,
-        footer: 'Sadaslk GC Manager',
+        footer: '> 𝑺𝒂𝒅𝒂𝒔𝒍𝒌 𝑮𝑪 𝑴𝒂𝒏𝒂𝒈𝒆𝒓',
         buttons: baseButtons,
         headerType: 4
       };
