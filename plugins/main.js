@@ -310,32 +310,21 @@ const number = conn.user.id.split(':')[0].replace(/@s\.whatsapp\.net$/, '');
       const defaultMessage = {
         image: { url: config.LOGO },
         caption: `*Hello ${pushname} 👋❕*  
-I am alive now 🎈\n✨ Thank you for choosing \`Visper-MD\` — your trusted WhatsApp Multi-Device Bot! ✨
+I am alive now 🎈\n✨ Thank you for choosing Sadaslk GC Manager — your trusted WhatsApp Multi-Device Bot! ✨
 *┌────────────────────┐*
-*├ \`⏳ 𝐔𝐩𝐭𝐢𝐦𝐞\`* : ${rtime}
-*├ \`🚨 𝐇𝐨𝐬𝐭\`* : ${hostname}
-*├ \`🍭 𝐏𝐫𝐞𝐟𝐢𝐱\`* : ${config.PREFIX}
-*├ \`👤 𝐔𝐬𝐞𝐫\`* : ${pushname}
-*├ \`🗃️ 𝐑𝐚𝐦 𝐮𝐬𝐬𝐚𝐠𝐞\`* : ${ramUsage}
-*├ \`⚖ 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫𝐬\`* : *VISPER ᴵᴺᶜ*
-*├ \`🧬 𝐕𝐞𝐫𝐬𝐢𝐨𝐧\`* : 6.0.0
+*├ ⏳ 𝐔𝐩𝐭𝐢𝐦𝐞* : ${rtime}
+*├ 🚨 𝐇𝐨𝐬𝐭* : ${hostname}
+*├ 🍭 𝐏𝐫𝐞𝐟𝐢𝐱* : ${config.PREFIX}
+*├ 👤 𝐔𝐬𝐞𝐫* : ${pushname}
+*├ 🗃️ 𝐑𝐚𝐦 𝐮𝐬𝐬𝐚𝐠𝐞* : ${ramUsage}
+*├ 🧬 𝐕𝐞𝐫𝐬𝐢𝐨𝐧* : 1.0.0
 *└────────────────────┘*
-*┌────────────────────┐*
-*├ 👨‍💻ᴠɪꜱᴘᴇʀ ᴅᴇᴠᴇʟᴏᴘᴇʀꜱ* :
-  \`• Founder & Developer\` : 𝗦avithu Induwara
-  \`• Co-Develper\` : 𝗗arksadas YT
-  \`• Co-Developer\` : 𝗡adeen Poorna
-  \`• Main-Supplier\` : 𝗣oorna Thalisha
-  \`• System Leader\` : 𝗔lex-ID
-  \`• API Developer\` : 𝗣athum 𝗥ajapakshe
-*└────────────────────┘*
-*🫟 Your all-in-one WhatsApp assistant — fast, reliable, and easy to use!* 
+*🫟 Your all-in-one Group Management assistant — fast, reliable, and easy to use!* 
 *🔗 Official Links:*  
-• *📂 GitHub Repository:* ${details.reponame}  
-• *📢 WhatsApp Channel:* ${details.chlink}   
+• *📢 WhatsApp Channel:* https://whatsapp.com/channel/0029VbCFHen3mFY6yL9D753N   
 
-*💛 Thank you for trusting VISPER-MD!*`,
-        footer: config.FOOTER,
+*💛 Thank you for trusting Sadaslk GC Manager!*`,
+        footer: 'Sadaslk GC Manager',
         buttons: baseButtons,
         headerType: 4
       };
@@ -371,9 +360,9 @@ I am alive now 🎈\n✨ Thank you for choosing \`Visper-MD\` — your trusted W
       );
     } else {
       const customMessage = {
-        image: { url: config.LOGO },
+        image: { url: 'http://imghost.sadas.dev/i/1787469683335.png' },
         caption,
-        footer: config.FOOTER,
+        footer: 'Sadaslk GC Manager',
         buttons: baseButtons,
         headerType: 4
       };
